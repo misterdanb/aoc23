@@ -29,7 +29,7 @@ int main()
     int sum = 0;
     while ((read = getline(&line, &len, fp)) != -1)
     {
-        int firstfound = 0;
+        int firstfound = 0, last_found = 0;
         char calib[3] = { 0, };
 
         int i = 0;
@@ -70,26 +70,29 @@ int main()
             i++;
         }
 
+        i--;
+
         while (i >= 0)
         {
-            if (isdigit(line[i]))
+            if (isdigit(line[i]) && !last_found)
             {
                 calib[1] = line[i];
+                last_found = 1;
                 break;
             }
 
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 10 && !last_found; j++)
             {
                 int thisisthenum = 1;
+                if (i + strlen(numbers[j]) > len)
+                {
+                    thisisthenum = 0;
+                    continue;
+                }
+                
                 for (int k = 0; k < strlen(numbers[j]); k++)
                 {
-                    /*if (i + 1 - strlen(numbers[j]) < 0)
-                    {
-                        thisisthenum = 0;
-                        break;
-                    }*/
-
-                    if (line[i + 1 - strlen(numbers[j]) + k] != numbers[j][k])
+                    if (line[i + k] != numbers[j][k])
                     {
                         thisisthenum = 0;
                         break;
@@ -99,6 +102,7 @@ int main()
                 if (thisisthenum)
                 {
                     calib[1] = 0x30 + j;
+                    last_found = 1;
                     break;
                 }
             }
@@ -106,7 +110,6 @@ int main()
             i--;
         }
 
-        printf("%s: %d\n", line, atoi(calib));
         sum += atoi(calib);
     }
 
