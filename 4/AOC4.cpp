@@ -101,6 +101,7 @@ int main()
         }
 
         // Set the number of copies received to 0
+        get<4>(cards[i]) = 0;
 
         // Loop through cards below the current card for the number of matches
         for (int j = i + 1; j < min(i + 1 + get<3>(cards[i]), (int) cards.size()); j++)
